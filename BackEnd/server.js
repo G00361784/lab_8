@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://admin:admin@martinscluster.w5rtkz0.mongodb.net/DB14');
+mongoose.connect('mongodb+srv://admin:<db_password>@admin.fmjxy.mongodb.net/');
 
 const movieSchema = new mongoose.Schema({
   title:String,
@@ -36,7 +36,15 @@ app.get('/api/movie/:id', async (req ,res)=>{
   const movie = await movieModel.findById(req.params.id);
   res.json(movie);
 })
+app.get('/api/movie/:id', async (req, res) => {
+  let movie = await movieModel.findById({ _id: req.params.id });
+  res.send(movie);
+});
 
+app.put('/api/movie/:id', async (req, res) => {
+  let movie = await movieModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  res.send(movie);
+});
 app.post('/api/movies',async (req, res)=>{
     console.log(req.body.title);
     const {title, year, poster} = req.body;
